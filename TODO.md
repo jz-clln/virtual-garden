@@ -1,32 +1,14 @@
-# Virtual Garden GitHub Pages Asset Path Fix - TODO
+# Firebase Realtime Database Integration - Shared Virtual Garden
 
-## Approved Plan Breakdown (17 precise edits across 7 files)
+## Steps to Complete:
 
-### Step 1: Edit src/utils/constants.js [✅6/6]
-- [ ] Replace 5x '/images/flowerN.png' in FLOWER_SPRITES
-- [ ] Replace '/images/background.jpg'
+- [ ] 1. Install Firebase SDK (`npm install firebase`)
+- [ ] 2. Create `src/utils/firebase.js` (app init + gardenRef + CRUD helpers)
+- [x] 3. Refactor `src/hooks/useGarden.js` (replace localStorage with Firebase listeners/writes)
+- [x] 4. Update `src/pages/GardenPage.jsx` (remove local loveLetter, now synced via Firebase)
+- [ ] 5. Test realtime sync (plant/refresh/react/clear across tabs)
+- [ ] 6. Verify bloom timers restore correctly on load
+- [ ] 7. Complete task + attempt_completion
 
-### Step 2: Edit src/pages/GardenPage.jsx [✅1/1]
-- [ ] Replace '/images/flower1.png' in LOVE_LETTER_FLOWER
-
-### Step 3: Edit src/components/FlowerPopup.jsx [✅1/1]
-- [ ] Replace '/images/flower1.png' in img src
-
-### Step 4: Edit src/components/FlowerLayer.jsx [✅1/1]
-- [ ] Replace "/images/sprout.png" in img src
-
-### Step 5: Edit src/components/GardenJournal.jsx [✅1/1]
-- [ ] Replace '/images/flower1.png' in img src
-
-### Step 6: Edit src/components/MusicPlayer.jsx [✅5/5]
-- [ ] Replace 5x '/music/*.mp3' in TRACKS array
-
-### Step 7: Edit src/components/LoadingScreen.jsx [✅1/1]
-- [ ] Replace "/images/flower1.png" in img src
-
-### Step 8: Verify
-- [ ] `npm run build` & check dist/ assets
-- [ ] Deploy & test live
-
-**Progress: ✅17/17 edits complete**
+Current progress: Starting step 1
 

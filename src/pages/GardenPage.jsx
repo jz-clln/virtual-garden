@@ -38,25 +38,7 @@ I love you so much, Desilyn.
 
 — Jabez`;
 
-const LOVE_LETTER_FLOWER = {
-  id: 'jabez-love-letter',
-  x: null, y: null,
-  size: 90,
-  sprite: { file: `${import.meta.env.BASE_URL}images/flower1.png`, name: 'Red Rose' },
-  sway: 'swayA', swayDur: '3s',
-  zIndex: 999,
-  plantedAt: new Date('2026-03-17').getTime(),
-  growDuration: 0,
-  bloomed: true,
-  isLoveLetter: true,
-  letterTitle: 'Hi Wifey 💚',
-  letterBody: JABEZ_LETTER_BODY,
-  mood: { id: 'romantic', label: '🌹 Romantic', color: '#e87fa0' },
-  plantedBy: 'DesilynBrillante',   // Jabez logs in with this username
-  userColor: '#7ecbf5',
-  reactions: {},
-  messagePromise: Promise.resolve(''),
-}
+
 
 export default function GardenPage({ currentUser, onLogout, onOpenLetter }) {
   const { canvasRef, spawnSparkles } = useParticles()
@@ -72,16 +54,12 @@ export default function GardenPage({ currentUser, onLogout, onOpenLetter }) {
   const [statsOpen, setStatsOpen] = useState(false)
   const [loveLetter, setLoveLetter] = useState(null)
 
-  useEffect(() => {
-    setLoveLetter({ ...LOVE_LETTER_FLOWER, x: window.innerWidth * 0.5, y: window.innerHeight * 0.55 })
-  }, [])
-
   // Apply theme to root element
   useEffect(() => {
     document.getElementById('root')?.setAttribute('data-theme', theme)
   }, [theme])
 
-  const allFlowers = loveLetter ? [loveLetter, ...flowers] : flowers
+  const allFlowers = flowers
 
   const openPopup = useCallback((flower) => {
     if (!flower.bloomed && !flower.isLoveLetter) return
@@ -109,26 +87,11 @@ export default function GardenPage({ currentUser, onLogout, onOpenLetter }) {
 
   const handleReact = useCallback((flowerId, emoji) => {
     if (!currentUser) return
-    // Handle love letter flower reactions in local state
-    if (flowerId === 'jabez-love-letter') {
-      setLoveLetter(prev => {
-        if (!prev) return prev
-        const reactions = { ...(prev.reactions ?? {}) }
-        if (reactions[emoji]?.includes(currentUser.username)) {
-          reactions[emoji] = reactions[emoji].filter(u => u !== currentUser.username)
-          if (reactions[emoji].length === 0) delete reactions[emoji]
-        } else {
-          reactions[emoji] = [...(reactions[emoji] ?? []), currentUser.username]
-        }
-        return { ...prev, reactions }
-      })
-    } else {
-      addReaction(flowerId, emoji, currentUser.username)
-    }
-    // Update popup if it's the same flower
+    addReaction(flowerId, emoji, currentUser.username)
+    // Update popup to trigger re-render
     setPopup(prev => {
       if (!prev || prev.id !== flowerId) return prev
-      return { ...prev } // trigger re-render; actual data comes from flowers array
+      return { ...prev }
     })
   }, [addReaction, currentUser])
 
@@ -151,11 +114,7 @@ export default function GardenPage({ currentUser, onLogout, onOpenLetter }) {
   }, [popup, composing, journalOpen, statsOpen, spotifyOpen, showClearConfirm, onOpenLetter])
 
   // Find up-to-date popup flower (reactions may have changed)
-  const popupFlower = popup
-    ? (popup.id === 'jabez-love-letter'
-      ? loveLetter
-      : allFlowers.find(f => f.id === popup.id) ?? popup)
-    : null
+  const popupFlower = popup ? allFlowers.find(f => f.id === popup.id) ?? popup : null
 
   return (
     <div style={{ position: 'fixed', inset: 0 }}>
@@ -192,7 +151,7 @@ export default function GardenPage({ currentUser, onLogout, onOpenLetter }) {
         <FlowerPopup flower={popupFlower} currentUser={currentUser} onClose={() => setPopup(null)} onReact={handleReact} />
       )}
 
-      {showClearConfirm && <ClearConfirm count={flowers.length} onConfirm={confirmClear} onCancel={() => setShowClearConfirm(false)} />}
+{showClearConfirm && <ClearConfirm count={allFlowers.length} onConfirm={confirmClear} onCancel={() => setShowClearConfirm(false)} />}
       <Toast message={toast.message} visible={toast.visible} />
     </div>
   )
