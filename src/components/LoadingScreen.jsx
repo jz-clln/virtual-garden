@@ -43,7 +43,7 @@ export default function LoadingScreen({ onComplete }) {
         {/* Growing flower */}
         <div className={`${styles.flowerWrap} ${phase >= 0 ? styles.flowerGrown : ''}`}>
           <img
-            src="/images/flower1.png"
+            src={`${import.meta.env.BASE_URL}images/flower1.png`}
             alt="flower"
             className={styles.flower}
             draggable={false}

@@ -4,15 +4,15 @@
 
 /** Flower sprite filenames. Put these in /public/images/ */
 export const FLOWER_SPRITES = [
-  { file: '/images/flower1.png', name: 'Sunshine Flower' },
-  { file: '/images/flower2.png', name: 'Pink Bloom' },
-  { file: '/images/flower3.png', name: 'Golden Blossom' },
-  { file: '/images/flower4.png', name: 'Violet Bloom' },
-  { file: '/images/flower5.png', name: 'Red Rose' },
+{ file: `${import.meta.env.BASE_URL}images/flower1.png`, name: 'Sunshine Flower' },
+{ file: `${import.meta.env.BASE_URL}images/flower2.png`, name: 'Pink Bloom' },
+{ file: `${import.meta.env.BASE_URL}images/flower3.png`, name: 'Golden Blossom' },
+{ file: `${import.meta.env.BASE_URL}images/flower4.png`, name: 'Violet Bloom' },
+{ file: `${import.meta.env.BASE_URL}images/flower5.png`, name: 'Red Rose' },
 ]
 
 /** Background image path — put in /public/images/ */
-export const BACKGROUND_IMAGE = '/images/background.jpg'
+export const BACKGROUND_IMAGE = `${import.meta.env.BASE_URL}images/background.jpg`
 
 /** Spotify playlist embed URL */
 export const SPOTIFY_EMBED_URL =

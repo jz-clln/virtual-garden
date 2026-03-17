@@ -61,7 +61,7 @@ function FlowerItem({ flower, onFlowerClick }) {
         onTouchEnd={() => setHovered(false)}
       >
         <img
-          src="/images/sprout.png"
+          src={`${import.meta.env.BASE_URL}images/sprout.png`}
           alt="Growing sprout"
           className={styles.sprout}
           style={{ width: sproutSize, height: sproutSize }}

@@ -42,7 +42,7 @@ const LOVE_LETTER_FLOWER = {
   id: 'jabez-love-letter',
   x: null, y: null,
   size: 90,
-  sprite: { file: '/images/flower1.png', name: 'Red Rose' },
+  sprite: { file: `${import.meta.env.BASE_URL}images/flower1.png`, name: 'Red Rose' },
   sway: 'swayA', swayDur: '3s',
   zIndex: 999,
   plantedAt: new Date('2026-03-17').getTime(),

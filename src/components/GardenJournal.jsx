@@ -50,7 +50,7 @@ function JournalEntry({ flower, onClick }) {
       {/* Flower thumbnail */}
       <div className={styles.entryThumb} style={{ '--ring': userColor }}>
         <img
-          src={flower.sprite?.file ?? '/images/flower1.png'}
+          src={flower.sprite?.file ?? `${import.meta.env.BASE_URL}images/flower1.png`}
           alt={flower.sprite?.name}
           className={styles.entryImg}
           draggable={false}

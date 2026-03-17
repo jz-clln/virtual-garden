@@ -52,7 +52,7 @@ export default function FlowerPopup({ flower, currentUser, onClose, onReact }) {
         {/* Flower + photo */}
         <div className={styles.topRow}>
           <div className={styles.imgWrap} style={{ '--ring-color': userColor }}>
-            <img src={flower.sprite?.file ?? '/images/flower1.png'} alt={flower.sprite?.name}
+            <img src={flower.sprite?.file ?? `${import.meta.env.BASE_URL}images/flower1.png`} alt={flower.sprite?.name}
               className={styles.flowerImg} draggable={false} />
           </div>
 

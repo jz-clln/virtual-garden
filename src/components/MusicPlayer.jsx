@@ -11,11 +11,11 @@ import styles from './MusicPlayer.module.css'
 
 // ── Track list — files must be in /public/music/ ──
 const TRACKS = [
-  { title: 'Beside You',     artist: 'Keshi',        src: '/music/Beside You.mp3'       },
-  { title: 'Nothing',        artist: 'Bruno Major',  src: '/music/Nothing.mp3'           },
-  { title: 'Rose',           artist: 'D.O',          src: '/music/Rose.mp3'              },
-  { title: 'You Feel Like',  artist: 'Hojean',       src: '/music/You Feel Like.mp3'     },
-  { title: 'Better With You',artist: 'Jeff Bernat',  src: '/music/Better With You.mp3'   },
+{ title: 'Beside You',     artist: 'Keshi',        src: `${import.meta.env.BASE_URL}music/Beside You.mp3`       },
+  { title: 'Nothing',        artist: 'Bruno Major',  src: `${import.meta.env.BASE_URL}music/Nothing.mp3`           },
+  { title: 'Rose',           artist: 'D.O',          src: `${import.meta.env.BASE_URL}music/Rose.mp3`              },
+  { title: 'You Feel Like',  artist: 'Hojean',       src: `${import.meta.env.BASE_URL}music/You Feel Like.mp3`     },
+  { title: 'Better With You',artist: 'Jeff Bernat',  src: `${import.meta.env.BASE_URL}music/Better With You.mp3`   },
 ]
 
 const DEFAULT_VOLUME = 0.20
