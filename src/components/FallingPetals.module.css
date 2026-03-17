@@ -1,0 +1,40 @@
+.layer {
+  position: fixed; inset: 0;
+  pointer-events: none; overflow: hidden;
+}
+
+/* Petals */
+.petal {
+  position: absolute; top: -20px;
+  image-rendering: pixelated;
+  animation-name: petalFall, petalSway;
+  animation-timing-function: linear, ease-in-out;
+  animation-iteration-count: infinite, infinite;
+  animation-fill-mode: both, both;
+  will-change: transform, opacity;
+}
+
+/* Fireflies */
+.firefly {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, #e8ff80 0%, #aaff44 50%, transparent 100%);
+  box-shadow: 0 0 6px 2px rgba(200,255,100,0.6);
+  animation-name: fireflyGlow, fireflyDrift;
+  animation-timing-function: ease-in-out, ease-in-out;
+  animation-iteration-count: infinite, infinite;
+  will-change: opacity, transform;
+}
+
+@keyframes fireflyGlow {
+  0%,100% { opacity: 0.1; transform: scale(0.6); }
+  40%,60% { opacity: 0.9; transform: scale(1.3); }
+}
+
+@keyframes fireflyDrift {
+  0%   { transform: translate(0, 0); }
+  25%  { transform: translate(calc(var(--dx) * 0.5), calc(var(--dy) * 0.3)); }
+  50%  { transform: translate(var(--dx), var(--dy)); }
+  75%  { transform: translate(calc(var(--dx) * 0.3), calc(var(--dy) * 0.7)); }
+  100% { transform: translate(0, 0); }
+}

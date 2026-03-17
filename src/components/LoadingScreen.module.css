@@ -1,0 +1,146 @@
+/* LoadingScreen.module.css */
+
+.screen {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.fadeOut {
+  opacity: 0;
+  transform: scale(1.04);
+  pointer-events: none;
+}
+
+/* Background */
+.bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  transform: scale(1.06);
+}
+.bgOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg, rgba(5,20,2,0.82) 0%, rgba(15,45,5,0.75) 100%);
+  backdrop-filter: blur(6px);
+}
+
+/* Falling petals */
+.petal {
+  position: absolute;
+  top: -30px;
+  pointer-events: none;
+  animation: petalFall linear infinite, petalSway ease-in-out infinite;
+  opacity: 0.7;
+}
+
+/* Center */
+.center {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Flower */
+.flowerWrap {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  transform: scale(0) translateY(20px);
+  opacity: 0;
+  transition: transform 0.9s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.6s ease;
+}
+.flowerGrown {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+.flower {
+  width: 120px;
+  height: 120px;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 6px 20px rgba(0,0,0,0.4));
+  animation: swayA 3s ease-in-out infinite;
+}
+
+/* Sparkle ring */
+.sparkleRing {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.sparkleDot {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--gold);
+  animation: sparkleBurst 0.7s ease-out forwards;
+  --a: 0deg;
+}
+.sparkleDot:nth-child(even)  { background: var(--pink-soft); width: 5px; height: 5px; }
+.sparkleDot:nth-child(3n)    { background: var(--green-light); }
+@keyframes sparkleBurst {
+  from { transform: translate(-50%,-50%) rotate(var(--a)) translateX(0) scale(1); opacity: 1; }
+  to   { transform: translate(-50%,-50%) rotate(var(--a)) translateX(65px) scale(0); opacity: 0; }
+}
+
+/* Title */
+.titleWrap {
+  text-align: center;
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.34, 1.3, 0.64, 1);
+  transition-delay: 0.1s;
+}
+.titleVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 5vw, 2.2rem);
+  color: #fff;
+  text-shadow: 0 0 30px rgba(180,255,120,0.5), var(--shadow-pixel);
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+.names {
+  font-family: var(--font-display);
+  font-size: clamp(0.75rem, 2.5vw, 1rem);
+  color: var(--green-light);
+  letter-spacing: 0.12em;
+  margin-bottom: 6px;
+}
+.tagline {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: clamp(0.65rem, 2vw, 0.85rem);
+  color: var(--pink-soft);
+  opacity: 0.8;
+}
+
+/* Loading dots */
+.dots {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+.dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: rgba(181,231,138,0.5);
+  animation: dotPulse 1s ease-in-out infinite;
+}
+@keyframes dotPulse {
+  0%,100% { transform: scale(0.6); opacity: 0.3; }
+  50%     { transform: scale(1.2); opacity: 1; }
+}

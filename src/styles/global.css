@@ -1,0 +1,293 @@
+/* ============================================================
+   GLOBAL CSS — Virtual Garden for Desilyn
+   Design: Romantic pixel-art · Soft greens · Warm cream & gold
+   ============================================================ */
+
+/* ---------- Google Fonts are loaded in index.html ---------- */
+
+/* ---------- CSS Variables (Design Tokens) ---------- */
+:root {
+  --green-light:   #b5e78a;
+  --green-mid:     #7ab648;
+  --green-dark:    #3d6b1e;
+  --green-deep:    #1e3d0a;
+  --pink-soft:     #ffb7c5;
+  --pink-deep:     #e87fa0;
+  --cream:         #fff9f0;
+  --cream-dark:    #f5e8d0;
+  --gold:          #f5c842;
+  --gold-dark:     #c9960a;
+  --lavender:      #e8d5ff;
+  --text-dark:     #3a2c1e;
+  --text-mid:      #5a4a35;
+
+  --shadow-pixel:  3px 3px 0 rgba(0,0,0,0.45);
+  --shadow-soft:   0 4px 24px rgba(30,60,10,0.25);
+  --overlay-dark:  rgba(10,30,5,0.62);
+
+  --font-display: 'Cinzel Decorative', serif;
+  --font-body:    'Lora', serif;
+
+  --border-pixel: 3px solid var(--green-dark);
+  --radius-none:  0;
+}
+
+/* ---------- Reset ---------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--green-deep);
+  color: var(--cream);
+  cursor: crosshair;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+button {
+  font-family: var(--font-display);
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+/* ---------- Shared smooth button style ---------- */
+.pixel-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: var(--cream);
+  background: var(--green-dark);
+  border: 2px solid rgba(61,107,30,0.6);
+  border-radius: 30px;
+  padding: 10px 24px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.22);
+  transition:
+    transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.2s ease,
+    background 0.15s ease;
+  cursor: pointer;
+}
+.pixel-btn:hover {
+  background: var(--green-mid);
+  transform: scale(1.05) translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.28);
+}
+.pixel-btn:active {
+  transform: scale(0.97);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.22);
+}
+
+.pixel-btn--pink {
+  background: var(--pink-deep);
+  border-color: rgba(232,127,160,0.5);
+}
+.pixel-btn--pink:hover { background: #d96090; }
+
+.pixel-btn--gold {
+  background: var(--gold-dark);
+  border-color: rgba(201,150,10,0.5);
+  color: #1a1000;
+}
+.pixel-btn--gold:hover { background: var(--gold); }
+
+/* ---------- Shared icon-button (smooth rounded) ---------- */
+.icon-btn {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 2px solid rgba(181, 231, 138, 0.55);
+  background: rgba(20, 60, 10, 0.78);
+  color: var(--green-light);
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 4px 16px rgba(0,0,0,0.28),
+    0 1px 0 rgba(255,255,255,0.1) inset;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition:
+    transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.2s ease,
+    background 0.15s ease,
+    border-color 0.15s ease;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+}
+.icon-btn:hover {
+  background: rgba(50, 120, 20, 0.9);
+  border-color: var(--green-light);
+  transform: scale(1.1) translateY(-2px);
+  box-shadow: 0 8px 22px rgba(0,0,0,0.32);
+}
+.icon-btn:active {
+  transform: scale(0.94);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.28);
+}
+.icon-btn.active {
+  color: var(--gold);
+  border-color: var(--gold);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.28), 0 0 10px rgba(245,200,66,0.28);
+}
+
+/* ---------- Shared overlay backdrop ---------- */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: var(--overlay-dark);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* ---------- Flower sprite ---------- */
+.flower-sprite {
+  position: absolute;
+  transform-origin: bottom center;
+  image-rendering: pixelated;
+  filter: drop-shadow(2px 5px 3px rgba(0,0,0,0.38));
+  cursor: pointer;
+  transition: filter 0.18s;
+}
+.flower-sprite:hover {
+  filter: drop-shadow(2px 5px 3px rgba(0,0,0,0.38)) brightness(1.2);
+  z-index: 999 !important;
+}
+
+/* ---------- Keyframe library ---------- */
+@keyframes flowerGrow {
+  0%   { transform: scale(0) translateY(20px); opacity: 0; }
+  60%  { transform: scale(1.18) translateY(-5px); opacity: 1; }
+  82%  { transform: scale(0.93) translateY(2px); }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+@keyframes swayA {
+  0%,100% { transform: rotate(-3deg) translateX(-1px); }
+  50%     { transform: rotate(3deg) translateX(1px); }
+}
+@keyframes swayB {
+  0%,100% { transform: rotate(2deg) translateX(1px); }
+  50%     { transform: rotate(-4deg) translateX(-2px); }
+}
+@keyframes swayC {
+  0%,100% { transform: rotate(-2deg); }
+  33%     { transform: rotate(3.5deg) translateX(1px); }
+  66%     { transform: rotate(-1deg) translateX(-1px); }
+}
+
+@keyframes petalFall {
+  0%   { transform: translateY(-40px) rotate(0deg) scale(1); opacity: 0.9; }
+  80%  { opacity: 0.7; }
+  100% { transform: translateY(110vh) rotate(720deg) scale(0.6); opacity: 0; }
+}
+@keyframes petalSway {
+  0%,100% { margin-left: 0; }
+  25%     { margin-left: 30px; }
+  75%     { margin-left: -30px; }
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes cardPop {
+  from { transform: scale(0.5) translateY(28px); opacity: 0; }
+  to   { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+@keyframes toastSlide {
+  from { opacity: 0; transform: translateX(-50%) translateY(12px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+@keyframes pulseHint {
+  0%,100% { opacity: 0.65; }
+  50%     { opacity: 1; }
+}
+
+@keyframes musicPulse {
+  0%,100% { box-shadow: var(--shadow-pixel), 0 0 0 0 rgba(245,200,66,0); }
+  50%     { box-shadow: var(--shadow-pixel), 0 0 0 7px rgba(245,200,66,0.22); }
+}
+
+@keyframes bloomPop {
+  0%   { transform: scale(0.1) rotate(-15deg); opacity: 0; filter: brightness(2); }
+  50%  { transform: scale(1.25) rotate(5deg);  opacity: 1; filter: brightness(1.4); }
+  75%  { transform: scale(0.92) rotate(-2deg); filter: brightness(1.1); }
+  100% { transform: scale(1) rotate(0deg);     opacity: 1; filter: brightness(1); }
+}
+
+@keyframes letterReveal {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes inkWrite {
+  from { clip-path: inset(0 100% 0 0); }
+  to   { clip-path: inset(0 0% 0 0); }
+}
+
+/* ---------- Scrollbar (letter page) ---------- */
+.scrollable::-webkit-scrollbar { width: 6px; }
+.scrollable::-webkit-scrollbar-track { background: var(--cream-dark); }
+.scrollable::-webkit-scrollbar-thumb { background: var(--green-mid); }
+
+/* ── Day/Night theme data attribute on #root ── */
+#root[data-theme="night"] {
+  --green-light: #a8d878;
+  --pink-soft:   #d4a0b8;
+}
+
+/* Night vignette overlay applied in GardenPage */
+.night-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg,
+    rgba(5,10,30,0.55) 0%,
+    rgba(10,20,50,0.35) 50%,
+    rgba(5,15,10,0.2) 100%
+  );
+  pointer-events: none;
+  z-index: 0;
+  mix-blend-mode: multiply;
+  animation: nightFadeIn 2s ease forwards;
+}
+
+@keyframes nightFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.dusk-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg,
+    rgba(80,30,5,0.3) 0%,
+    rgba(180,80,10,0.15) 100%
+  );
+  pointer-events: none;
+  z-index: 0;
+}

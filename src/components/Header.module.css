@@ -1,0 +1,146 @@
+/* ============================================================
+   Header.module.css
+   Mobile (< 768px): unified top bar — title left, buttons right
+   Desktop (≥ 768px): original centered title, buttons top-right
+   ============================================================ */
+
+/* ── MOBILE: unified single bar ── */
+.header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  min-height: 52px;
+  box-sizing: border-box;
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  flex-shrink: 1;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(0.7rem, 3.5vw, 1rem);
+  color: #fff;
+  text-shadow: 0 0 16px rgba(180,255,120,0.4);
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.userRow {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.userBadge {
+  font-family: var(--font-display);
+  font-size: 0.48rem;
+  letter-spacing: 0.08em;
+  border: 1.5px solid;
+  border-radius: 20px;
+  padding: 2px 8px;
+  background: rgba(10,28,5,0.5);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.userDot {
+  width: 5px; height: 5px;
+  border-radius: 50%; flex-shrink: 0;
+}
+
+.logoutBtn {
+  background: rgba(20,60,10,0.75);
+  border: 2px solid rgba(181,231,138,0.5);
+  border-radius: 50%;
+  width: 26px; height: 26px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--green-light);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.15s;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+.logoutBtn:hover {
+  background: rgba(192,57,43,0.4);
+  border-color: rgba(255,150,150,0.6);
+  color: #ffaaaa;
+  transform: scale(1.1);
+}
+
+.right {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+/* Extra small phones */
+@media (max-width: 360px) {
+  .title { font-size: 0.62rem; }
+  .header { padding: 6px 8px; min-height: 46px; }
+}
+
+/* ── DESKTOP (≥ 768px): restore original layout ──
+   Header goes back to centered text only.
+   ButtonRow is repositioned to top-right corner independently.
+   The .right slot is hidden — ButtonRow renders itself fixed. */
+@media (min-width: 768px) {
+  .header {
+    display: block;
+    text-align: center;
+    padding: 16px 24px 20px;
+    min-height: auto;
+    background: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    pointer-events: none;
+  }
+
+  .left {
+    display: contents; /* children render as if direct children of header */
+  }
+
+  .title {
+    font-size: clamp(1rem, 3.5vw, 2rem);
+    text-shadow: var(--shadow-pixel), 0 0 22px rgba(180,255,120,0.5);
+    display: block;
+    overflow: visible;
+    white-space: normal;
+  }
+
+  .userRow {
+    justify-content: center;
+    margin-top: 5px;
+    pointer-events: all;
+  }
+
+  .userBadge {
+    font-size: 0.55rem;
+    padding: 3px 10px;
+  }
+
+  .logoutBtn {
+    width: 28px; height: 28px;
+    border-width: 2px;
+  }
+
+  /* Hide the right slot on desktop — ButtonRow is fixed top-right */
+  .right { display: none; }
+}
