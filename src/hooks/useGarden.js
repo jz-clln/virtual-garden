@@ -3,7 +3,7 @@
 //  Synced realtime via Firebase RTDB /garden
 // ============================================================
 import { useState, useRef, useCallback, useEffect } from 'react'
-import { GARDEN_CONFIG } from '../utils/constants.js'
+import { GARDEN_CONFIG, FLOWER_SPRITES } from '../utils/constants.js'
 import {
   isTooClose, clampPosition,
   randomSize, randomSway, randomSwayDuration, makeFlowerId,
@@ -12,6 +12,12 @@ import { listenToGarden, addFlower, updateFlower, clearGarden as firebaseClearGa
 
 function randomGrowDuration() {
   return (3 + Math.random() * 2) * 60 * 1000
+}
+
+// ── Guard: ensure a restored flower has a valid sprite ──
+function ensureSprite(f) {
+  if (f.sprite && f.sprite.file && f.sprite.name) return f.sprite
+  return FLOWER_SPRITES[0]
 }
 
 export function useGarden({ onSpawnSparkles } = {}) {
@@ -25,13 +31,21 @@ export function useGarden({ onSpawnSparkles } = {}) {
   // ── Firebase listener with normalization ──
   useEffect(() => {
     listenerUnsubRef.current = listenToGarden((rawFlowers) => {
-      const normalized = rawFlowers.map(f => ({
-        ...f,
-        messagePromise: Promise.resolve(f.letterBody ?? ''),
-        plantedAt: Number(f.plantedAt || 0),
-        growDuration: Number(f.growDuration || 0),
-        bloomed: !!f.bloomed,
-      }))
+      const normalized = rawFlowers
+        .filter(f => f && f.id && f.x != null && f.y != null)  // drop corrupted records
+        .map(f => ({
+          ...f,
+          sprite:         ensureSprite(f),                       // safe sprite fallback
+          size:           f.size      ?? randomSize(),
+          sway:           f.sway      ?? randomSway(),
+          swayDur:        f.swayDur   ?? randomSwayDuration(),
+          reactions:      f.reactions ?? {},
+          photoDataUrl:   f.photoDataUrl ?? null,
+          messagePromise: Promise.resolve(f.letterBody ?? ''),
+          plantedAt:      Number(f.plantedAt   || 0),
+          growDuration:   Number(f.growDuration || 0),
+          bloomed:        !!f.bloomed,
+        }))
       setFlowers(normalized)
     })
 
@@ -70,11 +84,8 @@ export function useGarden({ onSpawnSparkles } = {}) {
 
   // ── Re-mount timers when flowers change ──
   useEffect(() => {
-    // Clear existing
     Object.values(timersRef.current).forEach(clearTimeout)
     timersRef.current = {}
-
-    // Schedule new
     flowers.forEach(f => { 
       if (!f.bloomed) scheduleBloom(f) 
     })
@@ -144,7 +155,6 @@ export function useGarden({ onSpawnSparkles } = {}) {
     }))
 
     try {
-      // Compute new reactions state
       const currentFlower = flowers.find(f => f.id === flowerId)
       const newReactions = { ...(currentFlower?.reactions ?? {}) }
       if (newReactions[emoji]?.includes(username)) {
@@ -189,4 +199,3 @@ export function useGarden({ onSpawnSparkles } = {}) {
     clearGarden 
   }
 }
-

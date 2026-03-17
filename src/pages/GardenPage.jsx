@@ -40,44 +40,50 @@ I love you so much, Desilyn.
 
 // ── Pre-planted love letter flower from Jabez ──
 const LOVE_LETTER_FLOWER = {
-  id:           'jabez-love-letter',
-  x: null, y: null,
-  size:         90,
-  sprite:       { file: '/images/flower1.png', name: 'Red Rose' },
-  sway: 'swayA', swayDur: '3s',
-  zIndex:       999,
-  plantedAt:    new Date('2026-03-17').getTime(),
+  id: 'jabez-love-letter',
+  x: null,
+  y: null,
+  size: 90,
+  sprite: {
+    file: `${import.meta.env.BASE_URL}images/flower1.png`,
+    name: 'Red Rose',
+  },
+  sway: 'swayA',
+  swayDur: '3s',
+  zIndex: 999,
+  plantedAt: new Date('2026-03-17').getTime(),
   growDuration: 0,
-  bloomed:      true,
+  bloomed: true,
   isLoveLetter: true,
-  letterTitle:  'Hi Wifey 💚',
-  letterBody:   JABEZ_LETTER_BODY,
-  mood:         { id: 'romantic', label: '🌹 Romantic', color: '#e87fa0' },
-  plantedBy:    'DesilynBrillante',   // Jabez logs in with this username
-  userColor:    '#7ecbf5',
-  reactions:    {},
+  letterTitle: 'Hi Wifey 💚',
+  letterBody: JABEZ_LETTER_BODY,
+  mood: { id: 'romantic', label: '🌹 Romantic', color: '#e87fa0' },
+  plantedBy: 'DesilynBrillante',
+  userColor: '#7ecbf5',
+  reactions: {},
   messagePromise: Promise.resolve(''),
 }
 
 export default function GardenPage({ currentUser, onLogout, onOpenLetter }) {
   const { canvasRef, spawnSparkles } = useParticles()
-  const { flowers, flowerCount, plantLetter, addReaction, handleInteraction, clearGarden } = useGarden({ onSpawnSparkles: spawnSparkles })
+  const { flowers, flowerCount, plantLetter, addReaction, handleInteraction, clearGarden } =
+    useGarden({ onSpawnSparkles: spawnSparkles })
   const { toast, showToast } = useToast()
   const theme = useDayNight()
 
-  const [popup,            setPopup]            = useState(null)
-  const [spotifyOpen,      setSpotifyOpen]      = useState(false)
+  const [popup, setPopup] = useState(null)
+  const [spotifyOpen, setSpotifyOpen] = useState(false)
   const [showClearConfirm, setShowClearConfirm] = useState(false)
-  const [composing,        setComposing]        = useState(false)
-  const [journalOpen,      setJournalOpen]      = useState(false)
-  const [statsOpen,        setStatsOpen]        = useState(false)
-  const [loveLetter,       setLoveLetter]       = useState(null)
+  const [composing, setComposing] = useState(false)
+  const [journalOpen, setJournalOpen] = useState(false)
+  const [statsOpen, setStatsOpen] = useState(false)
+  const [loveLetter, setLoveLetter] = useState(null)
 
   // Place love letter at centre on mount
   useEffect(() => {
     setLoveLetter({
       ...LOVE_LETTER_FLOWER,
-      x: window.innerWidth  * 0.5,
+      x: window.innerWidth * 0.5,
       y: window.innerHeight * 0.55,
     })
   }, [])
@@ -95,48 +101,77 @@ export default function GardenPage({ currentUser, onLogout, onOpenLetter }) {
     setPopup(flower)
   }, [])
 
-  const handleLetterReady = useCallback(({ title, body, mood, sprite, photoDataUrl, x, y }) => {
-    setComposing(false)
-    const result = plantLetter({ rawX: x, rawY: y, sprite, letterTitle: title, letterBody: body, mood, plantedBy: currentUser.username, userColor: currentUser.color, photoDataUrl, spawnSparkles })
-    if (result && result !== 'full' && result !== 'close' && result !== 'busy')
-      showToast(`🌱 A ${sprite.name} is growing for Desilyn!`)
-    else if (result === 'full') showToast('🌿 Garden is full! Clear some flowers first.')
-    else if (result === 'close') showToast('🌿 Too close to another flower — try a different spot.')
-  }, [plantLetter, currentUser, spawnSparkles, showToast])
+  const handleLetterReady = useCallback(
+    ({ title, body, mood, sprite, photoDataUrl, x, y }) => {
+      setComposing(false)
+      const result = plantLetter({
+        rawX: x,
+        rawY: y,
+        sprite,
+        letterTitle: title,
+        letterBody: body,
+        mood,
+        plantedBy: currentUser.username,
+        userColor: currentUser.color,
+        photoDataUrl,
+        spawnSparkles,
+      })
+
+      if (result && result !== 'full' && result !== 'close' && result !== 'busy') {
+        showToast(`🌱 A ${sprite.name} is growing for Desilyn!`)
+      } else if (result === 'full') {
+        showToast('🌿 Garden is full! Clear some flowers first.')
+      } else if (result === 'close') {
+        showToast('🌿 Too close to another flower — try a different spot.')
+      }
+    },
+    [plantLetter, currentUser, spawnSparkles, showToast]
+  )
 
   const handleClear = useCallback(() => {
-    if (flowers.length === 0) { showToast('Garden is already empty! 🌿'); return }
+    if (flowers.length === 0) {
+      showToast('Garden is already empty! 🌿')
+      return
+    }
     setShowClearConfirm(true)
   }, [flowers.length, showToast])
 
   const confirmClear = useCallback(() => {
-    setShowClearConfirm(false); clearGarden()
+    setShowClearConfirm(false)
+    clearGarden()
     showToast('🌿 Garden cleared — ready to bloom again!')
   }, [clearGarden, showToast])
 
-  const handleReact = useCallback((flowerId, emoji) => {
-    if (!currentUser) return
-    // Love letter flower reactions handled in local state
-    if (flowerId === 'jabez-love-letter') {
-      setLoveLetter(prev => {
-        if (!prev) return prev
-        const reactions = { ...(prev.reactions ?? {}) }
-        if (reactions[emoji]?.includes(currentUser.username)) {
-          reactions[emoji] = reactions[emoji].filter(u => u !== currentUser.username)
-          if (reactions[emoji].length === 0) delete reactions[emoji]
-        } else {
-          reactions[emoji] = [...(reactions[emoji] ?? []), currentUser.username]
-        }
-        return { ...prev, reactions }
+  const handleReact = useCallback(
+    (flowerId, emoji) => {
+      if (!currentUser) return
+
+      // Love letter flower reactions handled in local state
+      if (flowerId === 'jabez-love-letter') {
+        setLoveLetter((prev) => {
+          if (!prev) return prev
+          const reactions = { ...(prev.reactions ?? {}) }
+
+          if (reactions[emoji]?.includes(currentUser.username)) {
+            reactions[emoji] = reactions[emoji].filter((u) => u !== currentUser.username)
+            if (reactions[emoji].length === 0) delete reactions[emoji]
+          } else {
+            reactions[emoji] = [...(reactions[emoji] ?? []), currentUser.username]
+          }
+
+          return { ...prev, reactions }
+        })
+      } else {
+        addReaction(flowerId, emoji, currentUser.username)
+      }
+
+      setPopup((prev) => {
+        if (!prev || prev.id !== flowerId) return prev
+        return { ...prev }
       })
-    } else {
-      addReaction(flowerId, emoji, currentUser.username)
-    }
-    setPopup(prev => {
-      if (!prev || prev.id !== flowerId) return prev
-      return { ...prev }
-    })
-  }, [addReaction, currentUser])
+    },
+    [addReaction, currentUser]
+  )
 
   useEffect(() => {
     const onKey = (e) => {
@@ -148,57 +183,113 @@ export default function GardenPage({ currentUser, onLogout, onOpenLetter }) {
         else if (spotifyOpen) setSpotifyOpen(false)
         else if (showClearConfirm) setShowClearConfirm(false)
       }
-      if ((e.key === 's' || e.key === 'S') && !e.ctrlKey && !e.metaKey) setSpotifyOpen(v => !v)
-      if ((e.key === 'j' || e.key === 'J') && !e.ctrlKey && !e.metaKey) setJournalOpen(v => !v)
+
+      if ((e.key === 's' || e.key === 'S') && !e.ctrlKey && !e.metaKey) {
+        setSpotifyOpen((v) => !v)
+      }
+      if ((e.key === 'j' || e.key === 'J') && !e.ctrlKey && !e.metaKey) {
+        setJournalOpen((v) => !v)
+      }
     }
+
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [popup, composing, journalOpen, statsOpen, spotifyOpen, showClearConfirm])
 
   // Find up-to-date popup flower (reactions may have changed)
   const popupFlower = popup
-    ? (popup.id === 'jabez-love-letter'
-        ? loveLetter
-        : allFlowers.find(f => f.id === popup.id) ?? popup)
+    ? popup.id === 'jabez-love-letter'
+      ? loveLetter
+      : allFlowers.find((f) => f.id === popup.id) ?? popup
     : null
 
   return (
     <div style={{ position: 'fixed', inset: 0 }}>
-      <div style={{ position: 'absolute', inset: 0, backgroundImage: `url(${BACKGROUND_IMAGE})`, backgroundSize: 'cover', backgroundPosition: 'center', zIndex: 0 }}>
-        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center, transparent 35%, rgba(15,40,5,0.45) 100%)', pointerEvents: 'none' }} />
-        {theme === 'night'   && <div className="night-overlay"   />}
-        {theme === 'dawn'    && <div className="dawn-overlay"    />}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: `url(${BACKGROUND_IMAGE})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          zIndex: 0,
+        }}
+      >
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background:
+              'radial-gradient(ellipse at center, transparent 35%, rgba(15,40,5,0.45) 100%)',
+            pointerEvents: 'none',
+          }}
+        />
+        {theme === 'night' && <div className="night-overlay" />}
+        {theme === 'dawn' && <div className="dawn-overlay" />}
         {theme === 'sunrise' && <div className="sunrise-overlay" />}
       </div>
 
-      <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none' }} />
+      <canvas
+        ref={canvasRef}
+        style={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none' }}
+      />
       <FallingPetals />
       <FlowerLayer flowers={allFlowers} onFlowerClick={openPopup} />
 
       <Header currentUser={currentUser} onLogout={onLogout} theme={theme} />
       <ButtonRow
-        spotifyOpen={spotifyOpen} onToggleSpotify={() => setSpotifyOpen(v => !v)}
-        onClear={handleClear} showClearConfirm={showClearConfirm}
-        onConfirmClear={confirmClear} onCancelClear={() => setShowClearConfirm(false)}
+        spotifyOpen={spotifyOpen}
+        onToggleSpotify={() => setSpotifyOpen((v) => !v)}
+        onClear={handleClear}
+        showClearConfirm={showClearConfirm}
+        onConfirmClear={confirmClear}
+        onCancelClear={() => setShowClearConfirm(false)}
         onCompose={() => setComposing(true)}
-        onOpenJournal={() => setJournalOpen(v => !v)} journalOpen={journalOpen}
-        onOpenStats={() => setStatsOpen(v => !v)} statsOpen={statsOpen}
+        onOpenJournal={() => setJournalOpen((v) => !v)}
+        journalOpen={journalOpen}
+        onOpenStats={() => setStatsOpen((v) => !v)}
+        statsOpen={statsOpen}
       />
       <BottomBar flowerCount={allFlowers.length} theme={theme} />
       <MusicPlayer />
       <SpotifyPanel open={spotifyOpen} onClose={() => setSpotifyOpen(false)} />
 
-      <GardenJournal flowers={allFlowers} open={journalOpen} onClose={() => setJournalOpen(false)}
-        onSelectFlower={f => { setJournalOpen(false); setPopup(f) }} />
+      <GardenJournal
+        flowers={allFlowers}
+        open={journalOpen}
+        onClose={() => setJournalOpen(false)}
+        onSelectFlower={(f) => {
+          setJournalOpen(false)
+          setPopup(f)
+        }}
+      />
       <GardenStats flowers={allFlowers} open={statsOpen} onClose={() => setStatsOpen(false)} />
 
-      {composing && <LetterComposer currentUser={currentUser} onReady={handleLetterReady} onCancel={() => setComposing(false)} />}
-
-      {popupFlower && (
-        <FlowerPopup flower={popupFlower} currentUser={currentUser} onClose={() => setPopup(null)} onReact={handleReact} />
+      {composing && (
+        <LetterComposer
+          currentUser={currentUser}
+          onReady={handleLetterReady}
+          onCancel={() => setComposing(false)}
+        />
       )}
 
-      {showClearConfirm && <ClearConfirm count={allFlowers.length} onConfirm={confirmClear} onCancel={() => setShowClearConfirm(false)} />}
+      {popupFlower && (
+        <FlowerPopup
+          flower={popupFlower}
+          currentUser={currentUser}
+          onClose={() => setPopup(null)}
+          onReact={handleReact}
+        />
+      )}
+
+      {showClearConfirm && (
+        <ClearConfirm
+          count={allFlowers.length}
+          onConfirm={confirmClear}
+          onCancel={() => setShowClearConfirm(false)}
+        />
+      )}
+
       <Toast message={toast.message} visible={toast.visible} />
     </div>
   )
