@@ -261,18 +261,13 @@ button {
   --pink-soft:   #d4a0b8;
 }
 
-/* Night vignette overlay applied in GardenPage */
+/* Night overlay — no mix-blend-mode so flowers stay visible */
 .night-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg,
-    rgba(5,10,30,0.55) 0%,
-    rgba(10,20,50,0.35) 50%,
-    rgba(5,15,10,0.2) 100%
-  );
+  background: rgba(5, 10, 35, 0.45);
   pointer-events: none;
   z-index: 0;
-  mix-blend-mode: multiply;
   animation: nightFadeIn 2s ease forwards;
 }
 
@@ -281,13 +276,28 @@ button {
   to   { opacity: 1; }
 }
 
-.dusk-overlay {
+/* Dawn overlay (5pm–7pm) — warm golden */
+.dawn-overlay {
   position: absolute;
   inset: 0;
   background: linear-gradient(180deg,
-    rgba(80,30,5,0.3) 0%,
-    rgba(180,80,10,0.15) 100%
+    rgba(180, 80, 10, 0.22) 0%,
+    rgba(220, 120, 20, 0.15) 100%
   );
   pointer-events: none;
   z-index: 0;
+  animation: nightFadeIn 2s ease forwards;
+}
+
+/* Sunrise overlay (5am–7am) — soft pink/orange */
+.sunrise-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg,
+    rgba(255, 140, 80, 0.18) 0%,
+    rgba(255, 200, 120, 0.1) 100%
+  );
+  pointer-events: none;
+  z-index: 0;
+  animation: nightFadeIn 2s ease forwards;
 }

@@ -36,9 +36,28 @@ This garden is just a small thing I made, but it carries a big meaning for me. J
 
 I love you so much, Desilyn.
 
-— Jabez`;
+— Jabez`
 
-
+// ── Pre-planted love letter flower from Jabez ──
+const LOVE_LETTER_FLOWER = {
+  id:           'jabez-love-letter',
+  x: null, y: null,
+  size:         90,
+  sprite:       { file: '/images/flower1.png', name: 'Red Rose' },
+  sway: 'swayA', swayDur: '3s',
+  zIndex:       999,
+  plantedAt:    new Date('2026-03-17').getTime(),
+  growDuration: 0,
+  bloomed:      true,
+  isLoveLetter: true,
+  letterTitle:  'Hi Wifey 💚',
+  letterBody:   JABEZ_LETTER_BODY,
+  mood:         { id: 'romantic', label: '🌹 Romantic', color: '#e87fa0' },
+  plantedBy:    'DesilynBrillante',   // Jabez logs in with this username
+  userColor:    '#7ecbf5',
+  reactions:    {},
+  messagePromise: Promise.resolve(''),
+}
 
 export default function GardenPage({ currentUser, onLogout, onOpenLetter }) {
   const { canvasRef, spawnSparkles } = useParticles()
@@ -46,20 +65,30 @@ export default function GardenPage({ currentUser, onLogout, onOpenLetter }) {
   const { toast, showToast } = useToast()
   const theme = useDayNight()
 
-  const [popup, setPopup] = useState(null)
-  const [spotifyOpen, setSpotifyOpen] = useState(false)
+  const [popup,            setPopup]            = useState(null)
+  const [spotifyOpen,      setSpotifyOpen]      = useState(false)
   const [showClearConfirm, setShowClearConfirm] = useState(false)
-  const [composing, setComposing] = useState(false)
-  const [journalOpen, setJournalOpen] = useState(false)
-  const [statsOpen, setStatsOpen] = useState(false)
-  const [loveLetter, setLoveLetter] = useState(null)
+  const [composing,        setComposing]        = useState(false)
+  const [journalOpen,      setJournalOpen]      = useState(false)
+  const [statsOpen,        setStatsOpen]        = useState(false)
+  const [loveLetter,       setLoveLetter]       = useState(null)
+
+  // Place love letter at centre on mount
+  useEffect(() => {
+    setLoveLetter({
+      ...LOVE_LETTER_FLOWER,
+      x: window.innerWidth  * 0.5,
+      y: window.innerHeight * 0.55,
+    })
+  }, [])
 
   // Apply theme to root element
   useEffect(() => {
     document.getElementById('root')?.setAttribute('data-theme', theme)
   }, [theme])
 
-  const allFlowers = flowers
+  // All flowers including the pre-planted love letter
+  const allFlowers = loveLetter ? [loveLetter, ...flowers] : flowers
 
   const openPopup = useCallback((flower) => {
     if (!flower.bloomed && !flower.isLoveLetter) return
@@ -87,8 +116,22 @@ export default function GardenPage({ currentUser, onLogout, onOpenLetter }) {
 
   const handleReact = useCallback((flowerId, emoji) => {
     if (!currentUser) return
-    addReaction(flowerId, emoji, currentUser.username)
-    // Update popup to trigger re-render
+    // Love letter flower reactions handled in local state
+    if (flowerId === 'jabez-love-letter') {
+      setLoveLetter(prev => {
+        if (!prev) return prev
+        const reactions = { ...(prev.reactions ?? {}) }
+        if (reactions[emoji]?.includes(currentUser.username)) {
+          reactions[emoji] = reactions[emoji].filter(u => u !== currentUser.username)
+          if (reactions[emoji].length === 0) delete reactions[emoji]
+        } else {
+          reactions[emoji] = [...(reactions[emoji] ?? []), currentUser.username]
+        }
+        return { ...prev, reactions }
+      })
+    } else {
+      addReaction(flowerId, emoji, currentUser.username)
+    }
     setPopup(prev => {
       if (!prev || prev.id !== flowerId) return prev
       return { ...prev }
@@ -107,21 +150,25 @@ export default function GardenPage({ currentUser, onLogout, onOpenLetter }) {
       }
       if ((e.key === 's' || e.key === 'S') && !e.ctrlKey && !e.metaKey) setSpotifyOpen(v => !v)
       if ((e.key === 'j' || e.key === 'J') && !e.ctrlKey && !e.metaKey) setJournalOpen(v => !v)
-      if ((e.key === 'l' || e.key === 'L') && !e.ctrlKey && !e.metaKey) onOpenLetter()
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [popup, composing, journalOpen, statsOpen, spotifyOpen, showClearConfirm, onOpenLetter])
+  }, [popup, composing, journalOpen, statsOpen, spotifyOpen, showClearConfirm])
 
   // Find up-to-date popup flower (reactions may have changed)
-  const popupFlower = popup ? allFlowers.find(f => f.id === popup.id) ?? popup : null
+  const popupFlower = popup
+    ? (popup.id === 'jabez-love-letter'
+        ? loveLetter
+        : allFlowers.find(f => f.id === popup.id) ?? popup)
+    : null
 
   return (
     <div style={{ position: 'fixed', inset: 0 }}>
       <div style={{ position: 'absolute', inset: 0, backgroundImage: `url(${BACKGROUND_IMAGE})`, backgroundSize: 'cover', backgroundPosition: 'center', zIndex: 0 }}>
         <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center, transparent 35%, rgba(15,40,5,0.45) 100%)', pointerEvents: 'none' }} />
-        {theme === 'night' && <div className="night-overlay" />}
-        {theme === 'dusk' && <div className="dusk-overlay" />}
+        {theme === 'night'   && <div className="night-overlay"   />}
+        {theme === 'dawn'    && <div className="dawn-overlay"    />}
+        {theme === 'sunrise' && <div className="sunrise-overlay" />}
       </div>
 
       <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none' }} />
@@ -151,7 +198,7 @@ export default function GardenPage({ currentUser, onLogout, onOpenLetter }) {
         <FlowerPopup flower={popupFlower} currentUser={currentUser} onClose={() => setPopup(null)} onReact={handleReact} />
       )}
 
-{showClearConfirm && <ClearConfirm count={allFlowers.length} onConfirm={confirmClear} onCancel={() => setShowClearConfirm(false)} />}
+      {showClearConfirm && <ClearConfirm count={allFlowers.length} onConfirm={confirmClear} onCancel={() => setShowClearConfirm(false)} />}
       <Toast message={toast.message} visible={toast.visible} />
     </div>
   )

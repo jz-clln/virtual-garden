@@ -33,13 +33,13 @@ function makeFirefly(id) {
 export default function FallingPetals({ zIndex = 3 }) {
   const theme = useDayNight()
 
-  const petals    = useMemo(() => Array.from({ length: PETAL_CONFIG.count },    (_, i) => makePetal(i)),    [])
-  const fireflies = useMemo(() => Array.from({ length: 18 },                    (_, i) => makeFirefly(i)),  [])
+  const petals    = useMemo(() => Array.from({ length: PETAL_CONFIG.count }, (_, i) => makePetal(i)),   [])
+  const fireflies = useMemo(() => Array.from({ length: 18 },                (_, i) => makeFirefly(i)), [])
 
   return (
     <div className={styles.layer} style={{ zIndex }} aria-hidden>
-      {/* Day / dusk — falling petals */}
-      {(theme === 'day' || theme === 'dusk') && petals.map(p => (
+      {/* morning / sunrise / dawn — falling petals */}
+      {(theme === 'morning' || theme === 'sunrise' || theme === 'dawn') && petals.map(p => (
         <div
           key={p.id}
           className={styles.petal}
@@ -47,7 +47,7 @@ export default function FallingPetals({ zIndex = 3 }) {
             left:            p.left,
             width:           `${p.size}px`,
             height:          `${p.size}px`,
-            backgroundColor: theme === 'dusk'
+            backgroundColor: (theme === 'dawn' || theme === 'sunrise')
               ? `hsl(30, 90%, ${60 + Math.random() * 20}%)`
               : p.color,
             opacity:         p.opacity,
