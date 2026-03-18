@@ -6,10 +6,14 @@ import { FLOWER_SPRITES } from '../utils/constants.js'
 import styles from './LetterComposer.module.css'
 
 const MOODS = [
-  { id: 'romantic',  label: '🌹 Romantic',    color: '#e87fa0' },
-  { id: 'cheerful',  label: '🌼 Cheerful',    color: '#f5c842' },
-  { id: 'missing',   label: '💜 Missing You', color: '#b39ddb' },
-  { id: 'grateful',  label: '🌿 Grateful',    color: '#7ab648' },
+  { id: 'happy',    label: '😊 Happy',           color: '#f5c842' },
+  { id: 'loving',   label: '❤️ Loving You',       color: '#e87fa0' },
+  { id: 'missing',  label: '💜 Missing You',      color: '#b39ddb' },
+  { id: 'sad',      label: '😔 Sad',              color: '#7ecbf5' },
+  { id: 'grateful', label: '🙏 Grateful',         color: '#7ab648' },
+  { id: 'thinking', label: '💭 Thinking of You',  color: '#c9a0dc' },
+  { id: 'proud',    label: '🌟 Proud of You',     color: '#ffd700' },
+  { id: 'sorry',    label: '☹️ Sorry',            color: '#f0a896' },
 ]
 
 export default function LetterComposer({ currentUser, onReady, onCancel }) {
@@ -95,7 +99,7 @@ export default function LetterComposer({ currentUser, onReady, onCancel }) {
 
           {/* Photo attachment */}
           <div className={styles.field}>
-            <label className={styles.label}>📷 Attach a Photo (optional)</label>
+            <label className={styles.label}>Attach a Photo (optional)</label>
             <div className={styles.photoUploadArea} onClick={() => fileRef.current?.click()}>
               <input ref={fileRef} type="file" accept="image/*" className={styles.photoInput}
                 onChange={handlePhotoChange} onClick={e => e.stopPropagation()} />
@@ -107,7 +111,7 @@ export default function LetterComposer({ currentUser, onReady, onCancel }) {
                 </div>
               ) : (
                 <p className={styles.photoPlaceholder}>
-                  🖼 Click to attach a photo memory
+                  📷 Click to attach a photo memory
                 </p>
               )}
             </div>
